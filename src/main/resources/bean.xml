@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<!--把对象的创建交给-spring来管理-->
+    <!--    默认使用无参数的构造函数，如果定义了有参数的构造函数就会报错-->
+<!--    <bean id="accountService" class="com.ecnu.wwl.service.impl.AccountServiceImpl"></bean>-->
+<!--    <bean id="accountDao" class="com.ecnu.wwl.dao.impl.AccountDaoImpl"></bean>-->
+
+<!--构造函数注入：
+    标签<constructor-arg></constructor-arg>
+    标签中的属性
+        type:用于指定要注入的数据的数据类型，该数据类型也是构造函数中某个或某些参数的类型，但是构造函数中有两个或以上一样的属性就不能通过type来指定了
+        index:用于指定要注入的数据给构造函数中指定位置的参数赋值，从0开始
+        name:用于指定给构造函数中指定名称的参数赋值（常用 ）
+        ===============以上用于指定给构造函数中哪个参数赋值===========================
+        value:用于提供基本类型和String类型的数据
+        ref:用于指定其他的bean类型数据，它指的就是在sping的IOC核心容器中出现过的bean对象。只要在xml文件或者用注解配置过都可以用ref引用
+
+       优势：在获取bean对象中，注入数据是必须的操作，否则对象无法创建成功(用构造函数创建对象少提供一个参数都创建不了对象)
+       弊端：改变了bean对象的实例化方式，是我们在创建对象时，如果用不到这些数据也必须提供
+-->
+    <bean id="accountService" class="com.ecnu.wlw.service.impl.AccountServiceImpl">
+<!--        <constructor-arg type="java.lang.String" value="String"></constructor-arg> 构造函数中有两个String类型就不好找了-->
+        <constructor-arg name="name" value="test"></constructor-arg>
+        <constructor-arg name="ageee" value="18"></constructor-arg>
+<!--        brithday是Date类型的，要用ref引用关联的bean对象-->
+        <constructor-arg name="birthday" ref="now"></constructor-arg>
+    </bean>
+    <bean id="now" class="java.util.Date"></bean>
+
+<!--    使用set方法注入（常用）
+        涉及的标签：property
+        标签中的属性：
+            name:用于指定注入时所调用的set方法名称(setName就是name，setUserName就是userName)
+            value:用于提供基本类型和String类型的数据
+            ref:用于指定其他的bean类型数据，它指的就是在sping的IOC核心容器中出现过的bean对象。只要在xml文件或者用注解配置过都可以用ref引用
+        优势：
+            创建对象时没有明确的限制，可以直接使用默认的无参构造函数
+        弊端：
+            如果有某个成员必须有值，则获取的对象是有可能set方法没有执行(创建对象时先调用构造函数初始化一个对象，
+            再调用set方法给参数赋值，多线程下set方法可能被打断导致获取的对象不完整)
+-->
+    <bean id="accountService2" class="com.ecnu.wlw.service.impl.AccountServiceImpl2">
+        <property name="userName" value="TEST"></property>
+        <property name="age" value="20"></property>
+        <property name="birthday" ref="now"></property>
+    </bean>
+
+<!--    复杂类型/集合类型的注入
+    用于给List结构集合注入的标签：
+        list array ser
+    用于给map结构集合注入的标签：
+        map props
+    结构相同，标签可以互换
+-->
+    <bean id="accountService3" class="com.ecnu.wlw.service.impl.AccountServiceImpl3">
+        <property name="myStrs">
+            <array>
+                <value>AAA</value>
+                <value>BBB</value>
+                <value>CCC</value>
+                <value>"DDD"</value>
+            </array>
+        </property>
+        <property name="myList">
+            <list>
+                <value>AAA</value>
+                <value>BBB</value>
+                <value>CCC</value>
+                <value>"DDD"</value>
+            </list>
+        </property>
+        <property name="mySet">
+            <set>
+                <value>AAA</value>
+                <value>BBB</value>
+                <value>CCC</value>
+                <value>"DDD"</value>
+            </set>
+        </property>
+        <property name="myMap">
+            <map>
+                <entry key="test1" value="value1"></entry>
+                <entry key="test2" value="value2"></entry>
+                <entry key="test3" value="value3"></entry>
+                <entry key="test4" value="value4"></entry>
+            </map>
+        </property>
+        <property name="myProps">
+            <props>
+                <prop key="k1">kk1</prop>
+                <prop key="k2">kk2</prop>
+                <prop key="k3">kk3</prop>
+                <prop key="k4">kk4</prop>
+            </props>
+        </property>
+    </bean>
+
+
+</beans>
